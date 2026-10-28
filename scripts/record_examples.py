@@ -4,23 +4,39 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import shutil
 import sqlite3
 import sys
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
+SOURCE_ROOT = PROJECT_ROOT / "src"
+if str(SOURCE_ROOT) not in sys.path:
+    sys.path.insert(0, str(SOURCE_ROOT))
 
+from content_planner.graph import workflow
 from content_planner.service import run_demo, run_request
 
 
 EXAMPLES_DIR = PROJECT_ROOT / "examples"
 RUNTIME_DIR = PROJECT_ROOT / "data" / "example-runs"
+LLM_ENVIRONMENT_KEYS = ("LLM_BASE_URL", "LLM_API_KEY", "LLM_MODEL", "LLM_API_MODE")
 
 
 def main() -> None:
+    previous_environment = {key: os.environ.pop(key, None) for key in LLM_ENVIRONMENT_KEYS}
+    try:
+        _record_deterministic_examples()
+    finally:
+        for key, value in previous_environment.items():
+            if value is not None:
+                os.environ[key] = value
+
+
+def _record_deterministic_examples() -> None:
+    original_builder = workflow.build_decision_model
+    workflow.build_decision_model = lambda _config: None
     shutil.rmtree(RUNTIME_DIR, ignore_errors=True)
     RUNTIME_DIR.mkdir(parents=True, exist_ok=True)
     EXAMPLES_DIR.mkdir(exist_ok=True)
@@ -66,25 +82,27 @@ def main() -> None:
         ),
     ]
 
-    for name, description, command, execute in cases:
-        database_path = RUNTIME_DIR / f"{name}.db"
-        result = execute(database_path)
-        output = _normalized_output(result.to_dict(), name)
-        evidence = {
-            "description": description,
-            "command": command,
-            "actual_output": output,
-            "database_rows": _database_rows(database_path),
-            "verification": _verification(output),
-        }
-        output_path = EXAMPLES_DIR / f"{name}.json"
-        output_path.write_text(
-            json.dumps(evidence, ensure_ascii=False, indent=2) + "\n",
-            encoding="utf-8",
-        )
-        print(output_path.relative_to(PROJECT_ROOT))
-
-    shutil.rmtree(RUNTIME_DIR, ignore_errors=True)
+    try:
+        for name, description, command, execute in cases:
+            database_path = RUNTIME_DIR / f"{name}.db"
+            result = execute(database_path)
+            output = _normalized_output(result.to_dict(), name)
+            evidence = {
+                "description": description,
+                "command": command,
+                "actual_output": output,
+                "database_rows": _database_rows(database_path),
+                "verification": _verification(output),
+            }
+            output_path = EXAMPLES_DIR / f"{name}.json"
+            output_path.write_text(
+                json.dumps(evidence, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            print(output_path.relative_to(PROJECT_ROOT))
+    finally:
+        workflow.build_decision_model = original_builder
+        shutil.rmtree(RUNTIME_DIR, ignore_errors=True)
     _write_index()
 
 
@@ -102,6 +120,21 @@ def _write_index() -> None:
                 f"- Planner mode: `{result['planner_mode']}`",
                 f"- Trace entries: `{len(result['trace'])}`",
                 f"- Database rows: `{evidence['database_rows']}`",
+                "",
+            ]
+        )
+    live_path = EXAMPLES_DIR / "04-live-llm.json"
+    if live_path.exists():
+        evidence = json.loads(live_path.read_text(encoding="utf-8"))
+        lines.extend(
+            [
+                "## 04-live-llm",
+                "",
+                "- Input: configured OpenAI-compatible gateway, over-budget replanning scenario",
+                f"- Actual status: `{evidence['actual_output']['status']}`",
+                f"- Planner mode: `{evidence['actual_output']['planner_mode']}`",
+                f"- Decision source: `{evidence['decision_source']}`",
+                "- Safe record: excludes API key, gateway URL, headers, and prompt body.",
                 "",
             ]
         )

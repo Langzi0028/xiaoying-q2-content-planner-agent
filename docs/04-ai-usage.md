@@ -7,6 +7,7 @@ Claims supported by automated tests:
 - Budget/deadline replanning, tool-failure retry, idempotency, traces, execution limits, CLI notices, and persistence are covered by `tests/`.
 - Actual deterministic outputs and traces are committed under `examples/`.
 
-Claims not made:
+Live-model evidence:
 
-- No claim is made that a real model was contacted or that live model quality was evaluated. That claim requires a configured online gateway and a fresh safe evidence record.
+- A configured online model made a constrained alternative-selection decision. Safe proof is committed in `examples/04-live-llm.json` with `decision_source: "live_llm"`.
+- The record intentionally excludes the API key, gateway URL, headers, and prompt body; it proves only the bounded model decision path, not broad model quality.

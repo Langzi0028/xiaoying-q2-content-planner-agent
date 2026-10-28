@@ -17,6 +17,7 @@ python scripts\record_examples.py
 | Budget 10 replans 12 to 8 and saves | [`examples/01-budget-replan.json`](../examples/01-budget-replan.json) | `completed`, `actual_cost=8`, one replan, saved plan present |
 | Budget 7 cannot save and reports gap | [`examples/02-no-feasible-plan.json`](../examples/02-no-feasible-plan.json) | `partial`, no saved plan, minimum cost 8, gap 1 |
 | Tool failure is not marked successful and is retried | [`examples/03-tool-failure-retry.json`](../examples/03-tool-failure-retry.json) | `estimate_cost` attempt 1 fails, attempt 2 succeeds, script remains single successful artifact |
+| Live LLM selects an allowed alternative | [`examples/04-live-llm.json`](../examples/04-live-llm.json) | `decision_source=live_llm`, `planner_mode=llm`, safe trace persisted |
 
 ## Failure Behavior
 
@@ -27,7 +28,7 @@ python scripts\record_examples.py
 ## Known Limitations
 
 - The evidence scenarios use synthetic local tools.
-- A live LLM request has not been executed because no reachable user gateway is configured.
+- A live LLM request has been executed and redacted evidence is committed in `examples/04-live-llm.json`.
 - `resume` is idempotent for terminal runs and never repeats stored tool calls. The `demo --interrupt-before estimate_cost` scenario provides a controlled checkpoint boundary; resume preserves the generated script and continues from estimation.
 
 ## Live LLM Evaluation Procedure

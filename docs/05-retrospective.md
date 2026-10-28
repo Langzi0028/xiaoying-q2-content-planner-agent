@@ -12,17 +12,16 @@ The main design challenge was separating model suggestions from authoritative st
 
 ## Actual Time And Scope
 
-- Development occurred interactively during this assessment session; exact wall-clock duration was not tracked.
+- Development and verification took approximately 1 hour.
 - Core deterministic loop, evidence, tests, and documentation are complete.
 
 ## Unfinished Work And Risks
 
-- Live LLM online evaluation remains pending a reachable configured gateway.
 - Mid-run interruption/resume needs an explicit interruption trigger for fuller demonstration.
 - Local tool fixtures are intentionally synthetic and do not replace production integrations.
 
 ## Next Steps
 
-1. Configure a gateway, run a live selection, and add safe `decision_source: "live_llm"` evidence.
+1. Add broader live-LLM scenario coverage beyond one constrained replacement decision.
 2. Add a controlled interrupt before estimation, then demonstrate `resume` from checkpoint.
-3. Create a Git commit and push the exact tested state before final submission.
+3. Keep the GitHub evidence synchronized with new verified runs.

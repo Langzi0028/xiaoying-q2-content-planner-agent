@@ -18,12 +18,12 @@ def test_example_generator_creates_three_safe_trace_evidence_sets() -> None:
 
     files = sorted((PROJECT_ROOT / "examples").glob("*.json"))
 
-    assert [file.name for file in files] == [
+    assert [file.name for file in files[:3]] == [
         "01-budget-replan.json",
         "02-no-feasible-plan.json",
         "03-tool-failure-retry.json",
     ]
-    for file in files:
+    for file in files[:3]:
         evidence = json.loads(file.read_text(encoding="utf-8"))
         assert evidence["actual_output"]["trace"]
         assert evidence["database_rows"]["traces"] > 0

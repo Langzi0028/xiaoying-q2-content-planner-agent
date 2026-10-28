@@ -31,6 +31,7 @@ initialize
 ## Component Responsibilities
 
 - `main.py`: direct executable entry point.
+- `src/content_planner/`: application package. The repository uses the required `src/` layout; `main.py` explicitly adds `src/` so reviewers can still run `python main.py` directly.
 - `content_planner/cli.py`: argument parsing, stdout JSON, stderr notices.
 - `graph/workflow.py`: bounded state graph, constraint guards, dynamic replan selection.
 - `storage/`: business audit tables and LangGraph checkpoints in the same SQLite file.

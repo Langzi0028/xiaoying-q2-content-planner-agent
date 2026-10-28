@@ -25,7 +25,11 @@ def test_completed_run_contains_a_safe_decision_trace(tmp_path) -> None:
     assert all(REQUIRED_TRACE_FIELDS <= entry.keys() for entry in result.trace)
     assert any(entry["node"] == "decide_replan" for entry in result.trace)
     assert any(entry["action"] == "estimate_cost" for entry in result.trace)
-    assert {entry["decision_source"] for entry in result.trace} <= {"rule", "fallback"}
+    assert {entry["decision_source"] for entry in result.trace} <= {
+        "rule",
+        "fallback",
+        "live_llm",
+    }
 
 
 def test_show_loads_persisted_trace_records(tmp_path) -> None:

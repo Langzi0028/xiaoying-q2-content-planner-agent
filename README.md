@@ -2,6 +2,8 @@
 
 一个面向“小影科技笔试题第二题”的 Python 命令行内容任务规划 Agent。它采用 LangGraph 管理状态化执行，SQLite 保存运行审计与 checkpoint，并预留 LangChain + OpenAI-compatible 中转站模型适配。
 
+项目按规范将应用源码放在 `src/content_planner/`。为便于审核者直接运行，根目录 `main.py` 会显式加入 `src/` 后再启动 CLI，因此不需要 editable install 或额外设置 `PYTHONPATH`。
+
 ## Quick Start
 
 ```powershell
@@ -36,7 +38,7 @@ If no complete LLM configuration is available, the CLI prints a notice to stderr
 ## Limitations And Secret Policy
 
 - Local fixtures intentionally simulate the business tools for repeatable review.
-- Real LLM quality is not claimed until a reachable gateway is configured and a fresh `live_llm` evidence run is recorded.
+- A constrained live-LLM replacement decision is recorded in `examples/04-live-llm.json`; it proves the bounded decision path, not broad model quality.
 - Never commit `.env`, API keys, private gateway URLs, or generated SQLite databases. Use `.env.example` as the only configuration template.
 
 Detailed design is in `docs/02-solution.md`; demo commands are in `docs/demo-script.md`.

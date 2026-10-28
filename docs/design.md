@@ -44,4 +44,4 @@ Every run persists an ordered `trace` list with node/action, safe parameters, re
 
 ## Known Scope Limit
 
-`resume` returns terminal runs without duplicate calls and can continue the controlled `--interrupt-before estimate_cost` boundary without replaying the generated script. A real gateway has not been invoked because credentials are intentionally not configured, so live model tool-calling remains unverified.
+`resume` returns terminal runs without duplicate calls and can continue the controlled `--interrupt-before estimate_cost` boundary without replaying the generated script. A configured gateway has completed one constrained live model selection; the redacted proof is `examples/04-live-llm.json`.
