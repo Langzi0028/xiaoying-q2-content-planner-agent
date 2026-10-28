@@ -2,7 +2,7 @@
   "description": "预算 10；初始候选成本 12；应重规划到成本 8。",
   "command": "python main.py --database-path data/example-runs/01-budget-replan.db run --topic \"夏季防晒新品活动\" --budget 10 --deadline \"2030-10-30T18:00:00+08:00\"",
   "actual_output": {
-    "run_id": "run_4970b746de02",
+    "run_id": "run_f3b552bb63f0",
     "status": "completed",
     "topic": "夏季防晒新品活动",
     "budget": 10,
@@ -11,7 +11,7 @@
     "selected_candidate_id": "candidate_low_cost",
     "actual_cost": 8,
     "estimated_duration_minutes": 45,
-    "saved_plan_id": "plan_2387fe7a20b4",
+    "saved_plan_id": "plan_f3b552bb63f0",
     "replan_count": 1,
     "rejected_candidate_ids": [
       "candidate_premium"
@@ -96,7 +96,7 @@
           "estimate_cost:candidate_low_cost"
         ],
         "output": {
-          "plan_id": "plan_2387fe7a20b4"
+          "plan_id": "plan_f3b552bb63f0"
         },
         "error": null
       }
@@ -166,7 +166,7 @@
         "attempt": 1,
         "ok": true,
         "result": {
-          "plan_id": "plan_2387fe7a20b4"
+          "plan_id": "plan_f3b552bb63f0"
         },
         "error": null
       }

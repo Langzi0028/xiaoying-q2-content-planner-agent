@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import shutil
 import sqlite3
@@ -68,12 +69,13 @@ def main() -> None:
     for name, description, command, execute in cases:
         database_path = RUNTIME_DIR / f"{name}.db"
         result = execute(database_path)
+        output = _normalized_output(result.to_dict(), name)
         evidence = {
             "description": description,
             "command": command,
-            "actual_output": result.to_dict(),
+            "actual_output": output,
             "database_rows": _database_rows(database_path),
-            "verification": _verification(result.to_dict()),
+            "verification": _verification(output),
         }
         output_path = EXAMPLES_DIR / f"{name}.json"
         output_path.write_text(
@@ -117,6 +119,23 @@ def _database_rows(database_path: Path) -> dict[str, int]:
     }
     connection.close()
     return counts
+
+
+def _normalized_output(output: dict, evidence_name: str) -> dict:
+    """Keep committed evidence reproducible while preserving all business outcomes."""
+    stable_suffix = hashlib.sha256(evidence_name.encode("utf-8")).hexdigest()[:12]
+    replacements = {output["run_id"]: f"run_{stable_suffix}"}
+    if output["saved_plan_id"]:
+        replacements[output["saved_plan_id"]] = f"plan_{stable_suffix}"
+    return _replace_values(output, replacements)
+
+
+def _replace_values(value, replacements: dict[str, str]):
+    if isinstance(value, dict):
+        return {key: _replace_values(item, replacements) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_replace_values(item, replacements) for item in value]
+    return replacements.get(value, value)
 
 
 def _verification(result: dict) -> dict[str, object]:

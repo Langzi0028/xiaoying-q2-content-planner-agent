@@ -30,3 +30,22 @@ def test_example_generator_creates_three_safe_trace_evidence_sets() -> None:
     assert "Assessment Evidence" in (PROJECT_ROOT / "examples" / "README.md").read_text(
         encoding="utf-8"
     )
+
+
+def test_example_generator_produces_stable_committable_evidence() -> None:
+    command = [sys.executable, "scripts/record_examples.py"]
+    subprocess.run(command, cwd=PROJECT_ROOT, check=True)
+    first = {
+        path.name: path.read_text(encoding="utf-8")
+        for path in (PROJECT_ROOT / "examples").glob("*")
+        if path.is_file()
+    }
+
+    subprocess.run(command, cwd=PROJECT_ROOT, check=True)
+    second = {
+        path.name: path.read_text(encoding="utf-8")
+        for path in (PROJECT_ROOT / "examples").glob("*")
+        if path.is_file()
+    }
+
+    assert second == first

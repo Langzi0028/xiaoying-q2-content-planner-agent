@@ -2,7 +2,7 @@
   "description": "预算 7；所有候选均超预算；不允许保存方案。",
   "command": "python main.py --database-path data/example-runs/02-no-feasible-plan.db run --topic \"低预算活动测试\" --budget 7 --deadline \"2030-10-30T18:00:00+08:00\"",
   "actual_output": {
-    "run_id": "run_afcc8978e03e",
+    "run_id": "run_683a79b6a954",
     "status": "partial",
     "topic": "低预算活动测试",
     "budget": 7,

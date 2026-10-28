@@ -2,7 +2,7 @@
   "description": "第一次 estimate_cost 注入 TOOL_UNAVAILABLE；保留脚本并重试一次。",
   "command": "python main.py --database-path data/example-runs/03-tool-failure-retry.db demo --scenario tool-failure --fail-tool estimate_cost --fail-on-attempt 1",
   "actual_output": {
-    "run_id": "run_cabc81efb599",
+    "run_id": "run_325ddb48cd79",
     "status": "completed",
     "topic": "夏季防晒新品活动",
     "budget": 10,
@@ -11,7 +11,7 @@
     "selected_candidate_id": "candidate_reliable",
     "actual_cost": 8,
     "estimated_duration_minutes": 40,
-    "saved_plan_id": "plan_c9b5ecbf17c2",
+    "saved_plan_id": "plan_325ddb48cd79",
     "replan_count": 0,
     "rejected_candidate_ids": [],
     "failure_reason": null,
@@ -79,7 +79,7 @@
           "estimate_cost:candidate_reliable"
         ],
         "output": {
-          "plan_id": "plan_c9b5ecbf17c2"
+          "plan_id": "plan_325ddb48cd79"
         },
         "error": null
       }
@@ -137,7 +137,7 @@
         "attempt": 1,
         "ok": true,
         "result": {
-          "plan_id": "plan_c9b5ecbf17c2"
+          "plan_id": "plan_325ddb48cd79"
         },
         "error": null
       }
