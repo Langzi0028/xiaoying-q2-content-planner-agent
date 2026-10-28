@@ -1,0 +1,338 @@
+{
+  "description": "预算 10；初始候选成本 12；应重规划到成本 8。",
+  "command": "python main.py --database-path data/example-runs/01-budget-replan.db run --topic \"夏季防晒新品活动\" --budget 10 --deadline \"2030-10-30T18:00:00+08:00\"",
+  "actual_output": {
+    "run_id": "run_4970b746de02",
+    "status": "completed",
+    "topic": "夏季防晒新品活动",
+    "budget": 10,
+    "deadline": "2030-10-30T18:00:00+08:00",
+    "idempotency_key": null,
+    "selected_candidate_id": "candidate_low_cost",
+    "actual_cost": 8,
+    "estimated_duration_minutes": 45,
+    "saved_plan_id": "plan_2387fe7a20b4",
+    "replan_count": 1,
+    "rejected_candidate_ids": [
+      "candidate_premium"
+    ],
+    "failure_reason": null,
+    "planner_mode": "rule",
+    "steps": [
+      {
+        "step_id": "search_assets",
+        "step_type": "search_assets",
+        "status": "succeeded",
+        "dependencies": [],
+        "output": {
+          "candidate_ids": [
+            "candidate_premium",
+            "candidate_low_cost"
+          ]
+        },
+        "error": null
+      },
+      {
+        "step_id": "generate_script:candidate_premium",
+        "step_type": "generate_script",
+        "status": "succeeded",
+        "dependencies": [
+          "search_assets"
+        ],
+        "output": {
+          "candidate_id": "candidate_premium",
+          "script_id": "script_candidate_premium",
+          "content": "围绕夏季防晒新品活动的高制作成本短片方案脚本"
+        },
+        "error": null
+      },
+      {
+        "step_id": "estimate_cost:candidate_premium",
+        "step_type": "estimate_cost",
+        "status": "succeeded",
+        "dependencies": [
+          "generate_script:candidate_premium"
+        ],
+        "output": {
+          "candidate_id": "candidate_premium",
+          "total_cost": 12,
+          "duration_minutes": 90
+        },
+        "error": null
+      },
+      {
+        "step_id": "generate_script:candidate_low_cost",
+        "step_type": "generate_script",
+        "status": "succeeded",
+        "dependencies": [
+          "search_assets"
+        ],
+        "output": {
+          "candidate_id": "candidate_low_cost",
+          "script_id": "script_candidate_low_cost",
+          "content": "围绕夏季防晒新品活动的轻量图文短视频方案脚本"
+        },
+        "error": null
+      },
+      {
+        "step_id": "estimate_cost:candidate_low_cost",
+        "step_type": "estimate_cost",
+        "status": "succeeded",
+        "dependencies": [
+          "generate_script:candidate_low_cost"
+        ],
+        "output": {
+          "candidate_id": "candidate_low_cost",
+          "total_cost": 8,
+          "duration_minutes": 45
+        },
+        "error": null
+      },
+      {
+        "step_id": "save_plan",
+        "step_type": "save_plan",
+        "status": "succeeded",
+        "dependencies": [
+          "estimate_cost:candidate_low_cost"
+        ],
+        "output": {
+          "plan_id": "plan_2387fe7a20b4"
+        },
+        "error": null
+      }
+    ],
+    "tool_results": [
+      {
+        "step_id": "search_assets",
+        "tool_name": "search_assets",
+        "attempt": 1,
+        "ok": true,
+        "result": {
+          "candidate_count": 2
+        },
+        "error": null
+      },
+      {
+        "step_id": "generate_script:candidate_premium",
+        "tool_name": "generate_script",
+        "attempt": 1,
+        "ok": true,
+        "result": {
+          "candidate_id": "candidate_premium",
+          "script_id": "script_candidate_premium",
+          "content": "围绕夏季防晒新品活动的高制作成本短片方案脚本"
+        },
+        "error": null
+      },
+      {
+        "step_id": "estimate_cost:candidate_premium",
+        "tool_name": "estimate_cost",
+        "attempt": 1,
+        "ok": true,
+        "result": {
+          "candidate_id": "candidate_premium",
+          "total_cost": 12,
+          "duration_minutes": 90
+        },
+        "error": null
+      },
+      {
+        "step_id": "generate_script:candidate_low_cost",
+        "tool_name": "generate_script",
+        "attempt": 1,
+        "ok": true,
+        "result": {
+          "candidate_id": "candidate_low_cost",
+          "script_id": "script_candidate_low_cost",
+          "content": "围绕夏季防晒新品活动的轻量图文短视频方案脚本"
+        },
+        "error": null
+      },
+      {
+        "step_id": "estimate_cost:candidate_low_cost",
+        "tool_name": "estimate_cost",
+        "attempt": 1,
+        "ok": true,
+        "result": {
+          "candidate_id": "candidate_low_cost",
+          "total_cost": 8,
+          "duration_minutes": 45
+        },
+        "error": null
+      },
+      {
+        "step_id": "save_plan",
+        "tool_name": "save_plan",
+        "attempt": 1,
+        "ok": true,
+        "result": {
+          "plan_id": "plan_2387fe7a20b4"
+        },
+        "error": null
+      }
+    ],
+    "events": [
+      {
+        "type": "replan",
+        "reason": "BUDGET_EXCEEDED",
+        "from_candidate_id": "candidate_premium",
+        "to_candidate_id": "candidate_low_cost",
+        "planner_mode": "rule"
+      }
+    ],
+    "trace": [
+      {
+        "sequence": 1,
+        "node": "initialize",
+        "action": "create_run",
+        "parameters": {
+          "scenario": "over-budget-replan"
+        },
+        "result_summary": "Created an auditable planning run.",
+        "next_action": "search_assets",
+        "rationale": "A valid run needs candidate assets before planning can continue.",
+        "decision_source": "rule"
+      },
+      {
+        "sequence": 2,
+        "node": "search_assets",
+        "action": "search_assets",
+        "parameters": {
+          "scenario": "over-budget-replan"
+        },
+        "result_summary": "Found 2 candidate plans.",
+        "next_action": "generate_script",
+        "rationale": "Candidates are required before a script can be generated.",
+        "decision_source": "rule"
+      },
+      {
+        "sequence": 3,
+        "node": "generate_script",
+        "action": "generate_script",
+        "parameters": {
+          "candidate_id": "candidate_premium"
+        },
+        "result_summary": "Generated a candidate script artifact.",
+        "next_action": "estimate_cost",
+        "rationale": "Cost estimation requires a generated script.",
+        "decision_source": "rule"
+      },
+      {
+        "sequence": 4,
+        "node": "estimate_cost",
+        "action": "estimate_cost",
+        "parameters": {
+          "candidate_id": "candidate_premium",
+          "attempt": 1
+        },
+        "result_summary": "Estimated cost=12, duration=90 minutes.",
+        "next_action": "evaluate_constraints",
+        "rationale": "The deterministic constraint guard now evaluates feasibility.",
+        "decision_source": "rule"
+      },
+      {
+        "sequence": 5,
+        "node": "evaluate_constraints",
+        "action": "reject_candidate",
+        "parameters": {
+          "candidate_id": "candidate_premium",
+          "reason": "BUDGET_EXCEEDED"
+        },
+        "result_summary": "Candidate violates BUDGET_EXCEEDED.",
+        "next_action": "decide_replan",
+        "rationale": "An untried alternative exists and should be considered.",
+        "decision_source": "rule"
+      },
+      {
+        "sequence": 6,
+        "node": "decide_replan",
+        "action": "select_candidate",
+        "parameters": {
+          "rejected_candidate_id": "candidate_premium",
+          "selected_candidate_id": "candidate_low_cost"
+        },
+        "result_summary": "Selected an alternative candidate for replanning.",
+        "next_action": "generate_script",
+        "rationale": "BUDGET_EXCEEDED",
+        "decision_source": "rule"
+      },
+      {
+        "sequence": 7,
+        "node": "generate_script",
+        "action": "generate_script",
+        "parameters": {
+          "candidate_id": "candidate_low_cost"
+        },
+        "result_summary": "Generated a candidate script artifact.",
+        "next_action": "estimate_cost",
+        "rationale": "Cost estimation requires a generated script.",
+        "decision_source": "rule"
+      },
+      {
+        "sequence": 8,
+        "node": "estimate_cost",
+        "action": "estimate_cost",
+        "parameters": {
+          "candidate_id": "candidate_low_cost",
+          "attempt": 1
+        },
+        "result_summary": "Estimated cost=8, duration=45 minutes.",
+        "next_action": "evaluate_constraints",
+        "rationale": "The deterministic constraint guard now evaluates feasibility.",
+        "decision_source": "rule"
+      },
+      {
+        "sequence": 9,
+        "node": "evaluate_constraints",
+        "action": "validate_constraints",
+        "parameters": {
+          "candidate_id": "candidate_low_cost"
+        },
+        "result_summary": "Candidate satisfies budget and deadline constraints.",
+        "next_action": "save_plan",
+        "rationale": "Only a feasible candidate may be saved.",
+        "decision_source": "rule"
+      },
+      {
+        "sequence": 10,
+        "node": "save_plan",
+        "action": "save_plan",
+        "parameters": {
+          "candidate_id": "candidate_low_cost"
+        },
+        "result_summary": "Saved a budget-compliant content plan.",
+        "next_action": "finalize",
+        "rationale": "All dependencies and deterministic constraints succeeded.",
+        "decision_source": "rule"
+      },
+      {
+        "sequence": 11,
+        "node": "finalize",
+        "action": "finalize_run",
+        "parameters": {
+          "status": "completed"
+        },
+        "result_summary": "Run finalized with status=completed.",
+        "next_action": "end",
+        "rationale": "The workflow reached a terminal state.",
+        "decision_source": "rule"
+      }
+    ]
+  },
+  "database_rows": {
+    "runs": 1,
+    "steps": 6,
+    "tool_results": 6,
+    "replans": 1,
+    "saved_plans": 1,
+    "traces": 11
+  },
+  "verification": {
+    "status": "completed",
+    "planner_mode": "rule",
+    "replan_count": 1,
+    "saved_plan_id_present": true,
+    "trace_entries": 11,
+    "failed_tool_attempts": []
+  }
+}

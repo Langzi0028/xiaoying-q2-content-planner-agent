@@ -1,0 +1,295 @@
+{
+  "description": "第一次 estimate_cost 注入 TOOL_UNAVAILABLE；保留脚本并重试一次。",
+  "command": "python main.py --database-path data/example-runs/03-tool-failure-retry.db demo --scenario tool-failure --fail-tool estimate_cost --fail-on-attempt 1",
+  "actual_output": {
+    "run_id": "run_cabc81efb599",
+    "status": "completed",
+    "topic": "夏季防晒新品活动",
+    "budget": 10,
+    "deadline": "2030-10-30T18:00:00+08:00",
+    "idempotency_key": null,
+    "selected_candidate_id": "candidate_reliable",
+    "actual_cost": 8,
+    "estimated_duration_minutes": 40,
+    "saved_plan_id": "plan_c9b5ecbf17c2",
+    "replan_count": 0,
+    "rejected_candidate_ids": [],
+    "failure_reason": null,
+    "planner_mode": "rule",
+    "steps": [
+      {
+        "step_id": "search_assets",
+        "step_type": "search_assets",
+        "status": "succeeded",
+        "dependencies": [],
+        "output": {
+          "candidate_ids": [
+            "candidate_reliable"
+          ]
+        },
+        "error": null
+      },
+      {
+        "step_id": "generate_script:candidate_reliable",
+        "step_type": "generate_script",
+        "status": "succeeded",
+        "dependencies": [
+          "search_assets"
+        ],
+        "output": {
+          "candidate_id": "candidate_reliable",
+          "script_id": "script_candidate_reliable",
+          "content": "围绕夏季防晒新品活动的可恢复估算故障的标准方案脚本"
+        },
+        "error": null
+      },
+      {
+        "step_id": "estimate_cost:candidate_reliable",
+        "step_type": "estimate_cost",
+        "status": "failed",
+        "dependencies": [
+          "generate_script:candidate_reliable"
+        ],
+        "output": null,
+        "error": {
+          "code": "TOOL_UNAVAILABLE",
+          "message": "成本估算服务暂时不可用",
+          "retryable": true
+        }
+      },
+      {
+        "step_id": "estimate_cost:candidate_reliable",
+        "step_type": "estimate_cost",
+        "status": "succeeded",
+        "dependencies": [
+          "generate_script:candidate_reliable"
+        ],
+        "output": {
+          "candidate_id": "candidate_reliable",
+          "total_cost": 8,
+          "duration_minutes": 40
+        },
+        "error": null
+      },
+      {
+        "step_id": "save_plan",
+        "step_type": "save_plan",
+        "status": "succeeded",
+        "dependencies": [
+          "estimate_cost:candidate_reliable"
+        ],
+        "output": {
+          "plan_id": "plan_c9b5ecbf17c2"
+        },
+        "error": null
+      }
+    ],
+    "tool_results": [
+      {
+        "step_id": "search_assets",
+        "tool_name": "search_assets",
+        "attempt": 1,
+        "ok": true,
+        "result": {
+          "candidate_count": 1
+        },
+        "error": null
+      },
+      {
+        "step_id": "generate_script:candidate_reliable",
+        "tool_name": "generate_script",
+        "attempt": 1,
+        "ok": true,
+        "result": {
+          "candidate_id": "candidate_reliable",
+          "script_id": "script_candidate_reliable",
+          "content": "围绕夏季防晒新品活动的可恢复估算故障的标准方案脚本"
+        },
+        "error": null
+      },
+      {
+        "step_id": "estimate_cost:candidate_reliable",
+        "tool_name": "estimate_cost",
+        "attempt": 1,
+        "ok": false,
+        "result": null,
+        "error": {
+          "code": "TOOL_UNAVAILABLE",
+          "message": "成本估算服务暂时不可用",
+          "retryable": true
+        }
+      },
+      {
+        "step_id": "estimate_cost:candidate_reliable",
+        "tool_name": "estimate_cost",
+        "attempt": 2,
+        "ok": true,
+        "result": {
+          "candidate_id": "candidate_reliable",
+          "total_cost": 8,
+          "duration_minutes": 40
+        },
+        "error": null
+      },
+      {
+        "step_id": "save_plan",
+        "tool_name": "save_plan",
+        "attempt": 1,
+        "ok": true,
+        "result": {
+          "plan_id": "plan_c9b5ecbf17c2"
+        },
+        "error": null
+      }
+    ],
+    "events": [
+      {
+        "type": "retry",
+        "step_id": "estimate_cost:candidate_reliable",
+        "reason": "TOOL_UNAVAILABLE"
+      }
+    ],
+    "trace": [
+      {
+        "sequence": 1,
+        "node": "initialize",
+        "action": "create_run",
+        "parameters": {
+          "scenario": "tool-failure"
+        },
+        "result_summary": "Created an auditable planning run.",
+        "next_action": "search_assets",
+        "rationale": "A valid run needs candidate assets before planning can continue.",
+        "decision_source": "rule"
+      },
+      {
+        "sequence": 2,
+        "node": "search_assets",
+        "action": "search_assets",
+        "parameters": {
+          "scenario": "tool-failure"
+        },
+        "result_summary": "Found 1 candidate plans.",
+        "next_action": "generate_script",
+        "rationale": "Candidates are required before a script can be generated.",
+        "decision_source": "rule"
+      },
+      {
+        "sequence": 3,
+        "node": "generate_script",
+        "action": "generate_script",
+        "parameters": {
+          "candidate_id": "candidate_reliable"
+        },
+        "result_summary": "Generated a candidate script artifact.",
+        "next_action": "estimate_cost",
+        "rationale": "Cost estimation requires a generated script.",
+        "decision_source": "rule"
+      },
+      {
+        "sequence": 4,
+        "node": "estimate_cost",
+        "action": "estimate_cost",
+        "parameters": {
+          "candidate_id": "candidate_reliable",
+          "attempt": 1
+        },
+        "result_summary": "Cost estimator returned TOOL_UNAVAILABLE.",
+        "next_action": "evaluate_constraints",
+        "rationale": "The failure is retryable, so retry eligibility must be evaluated.",
+        "decision_source": "rule"
+      },
+      {
+        "sequence": 5,
+        "node": "evaluate_constraints",
+        "action": "request_retry",
+        "parameters": {
+          "step_id": "estimate_cost:candidate_reliable",
+          "attempt": 2
+        },
+        "result_summary": "The cost estimator failed with a retryable error.",
+        "next_action": "estimate_cost",
+        "rationale": "The retry policy allows one additional estimate attempt.",
+        "decision_source": "rule"
+      },
+      {
+        "sequence": 6,
+        "node": "estimate_cost",
+        "action": "estimate_cost",
+        "parameters": {
+          "candidate_id": "candidate_reliable",
+          "attempt": 2
+        },
+        "result_summary": "Estimated cost=8, duration=40 minutes.",
+        "next_action": "evaluate_constraints",
+        "rationale": "The deterministic constraint guard now evaluates feasibility.",
+        "decision_source": "rule"
+      },
+      {
+        "sequence": 7,
+        "node": "evaluate_constraints",
+        "action": "validate_constraints",
+        "parameters": {
+          "candidate_id": "candidate_reliable"
+        },
+        "result_summary": "Candidate satisfies budget and deadline constraints.",
+        "next_action": "save_plan",
+        "rationale": "Only a feasible candidate may be saved.",
+        "decision_source": "rule"
+      },
+      {
+        "sequence": 8,
+        "node": "save_plan",
+        "action": "save_plan",
+        "parameters": {
+          "candidate_id": "candidate_reliable"
+        },
+        "result_summary": "Saved a budget-compliant content plan.",
+        "next_action": "finalize",
+        "rationale": "All dependencies and deterministic constraints succeeded.",
+        "decision_source": "rule"
+      },
+      {
+        "sequence": 9,
+        "node": "finalize",
+        "action": "finalize_run",
+        "parameters": {
+          "status": "completed"
+        },
+        "result_summary": "Run finalized with status=completed.",
+        "next_action": "end",
+        "rationale": "The workflow reached a terminal state.",
+        "decision_source": "rule"
+      }
+    ]
+  },
+  "database_rows": {
+    "runs": 1,
+    "steps": 4,
+    "tool_results": 5,
+    "replans": 0,
+    "saved_plans": 1,
+    "traces": 9
+  },
+  "verification": {
+    "status": "completed",
+    "planner_mode": "rule",
+    "replan_count": 0,
+    "saved_plan_id_present": true,
+    "trace_entries": 9,
+    "failed_tool_attempts": [
+      {
+        "step_id": "estimate_cost:candidate_reliable",
+        "tool_name": "estimate_cost",
+        "attempt": 1,
+        "ok": false,
+        "result": null,
+        "error": {
+          "code": "TOOL_UNAVAILABLE",
+          "message": "成本估算服务暂时不可用",
+          "retryable": true
+        }
+      }
+    ]
+  }
+}

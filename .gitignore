@@ -1,0 +1,14 @@
+.env
+.idea/
+.codegraph/
+.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+__pycache__/
+data/*.db
+data/*.db-*
+data/example-runs/
+data/final-smoke.db
+data/live-evaluation/
+data/resume-smoke.db
