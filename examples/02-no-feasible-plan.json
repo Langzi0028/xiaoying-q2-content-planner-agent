@@ -21,7 +21,7 @@
       "minimum_cost": "8",
       "budget_gap": "1"
     },
-    "planner_mode": "rule",
+    "planner_mode": "fallback",
     "steps": [
       {
         "step_id": "search_assets",
@@ -155,11 +155,15 @@
     ],
     "events": [
       {
+        "type": "llm_fallback",
+        "reason": "OpenAIConnectionError"
+      },
+      {
         "type": "replan",
         "reason": "BUDGET_EXCEEDED",
         "from_candidate_id": "candidate_premium",
         "to_candidate_id": "candidate_low_cost",
-        "planner_mode": "rule"
+        "planner_mode": "fallback"
       }
     ],
     "trace": [
@@ -236,7 +240,7 @@
         "result_summary": "Selected an alternative candidate for replanning.",
         "next_action": "generate_script",
         "rationale": "BUDGET_EXCEEDED",
-        "decision_source": "rule"
+        "decision_source": "fallback"
       },
       {
         "sequence": 7,
@@ -299,7 +303,7 @@
   },
   "verification": {
     "status": "partial",
-    "planner_mode": "rule",
+    "planner_mode": "fallback",
     "replan_count": 1,
     "saved_plan_id_present": false,
     "trace_entries": 10,

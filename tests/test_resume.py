@@ -5,14 +5,13 @@ from content_planner.service import resume_run, run_demo
 
 def test_resume_returns_completed_run_without_repeating_successful_steps(tmp_path) -> None:
     database_path = tmp_path / "planner.db"
-    first = resume_run(
+    first = run_demo(
         database_path=database_path,
-        run_id="resume-case",
         scenario="tool-failure",
         fail_tool="estimate_cost",
         fail_on_attempt=1,
     )
-    second = resume_run(database_path=database_path, run_id="resume-case")
+    second = resume_run(database_path=database_path, run_id=first.run_id)
 
     assert first.status == "completed"
     assert second.run_id == first.run_id
@@ -22,17 +21,21 @@ def test_resume_returns_completed_run_without_repeating_successful_steps(tmp_pat
 
 def test_resume_returns_partial_run_without_repeating_tools(tmp_path) -> None:
     database_path = tmp_path / "planner.db"
-    first = resume_run(
+    first = run_demo(
         database_path=database_path,
-        run_id="partial-resume-case",
-        scenario="tool-failure",
-        fail_tool="estimate_cost",
-        fail_on_attempt=1,
+        scenario="no-feasible-plan",
     )
-    second = resume_run(database_path=database_path, run_id="partial-resume-case")
+    second = resume_run(database_path=database_path, run_id=first.run_id)
 
-    assert first.status == "completed"
+    assert first.status == "partial"
     assert second.tool_results == first.tool_results
+
+
+def test_resume_rejects_unknown_run(tmp_path) -> None:
+    from pytest import raises
+
+    with raises(ValueError, match="RUN_NOT_FOUND"):
+        resume_run(database_path=tmp_path / "planner.db", run_id="missing")
 
 
 def test_resume_continues_interrupted_run_without_repeating_script(tmp_path) -> None:

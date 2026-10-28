@@ -4,7 +4,7 @@
 
 - Input: `python main.py --database-path data/example-runs/01-budget-replan.db run --topic "夏季防晒新品活动" --budget 10 --deadline "2030-10-30T18:00:00+08:00"`
 - Actual status: `completed`
-- Planner mode: `rule`
+- Planner mode: `fallback`
 - Trace entries: `11`
 - Database rows: `{'runs': 1, 'steps': 6, 'tool_results': 6, 'replans': 1, 'saved_plans': 1, 'traces': 11}`
 
@@ -12,7 +12,7 @@
 
 - Input: `python main.py --database-path data/example-runs/02-no-feasible-plan.db run --topic "低预算活动测试" --budget 7 --deadline "2030-10-30T18:00:00+08:00"`
 - Actual status: `partial`
-- Planner mode: `rule`
+- Planner mode: `fallback`
 - Trace entries: `10`
 - Database rows: `{'runs': 1, 'steps': 5, 'tool_results': 5, 'replans': 1, 'saved_plans': 0, 'traces': 10}`
 

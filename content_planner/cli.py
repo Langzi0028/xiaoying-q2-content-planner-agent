@@ -47,9 +47,6 @@ def build_parser() -> argparse.ArgumentParser:
     show.add_argument("--run-id", required=True)
     resume = subparsers.add_parser("resume", help="Resume an unfinished run")
     resume.add_argument("--run-id", required=True)
-    resume.add_argument("--scenario", choices=["over-budget-replan", "tool-failure", "no-feasible-plan", "deadline-replan"])
-    resume.add_argument("--fail-tool")
-    resume.add_argument("--fail-on-attempt", type=int)
     subparsers.add_parser("list-runs", help="List persisted runs")
     return parser
 
@@ -90,9 +87,6 @@ def main(argv: Sequence[str] | None = None) -> int:
             result = resume_run(
                 database_path=Path(args.database_path),
                 run_id=args.run_id,
-                scenario=args.scenario,
-                fail_tool=args.fail_tool,
-                fail_on_attempt=args.fail_on_attempt,
             )
         except ValueError as error:
             print(render_json({"error": str(error)}))

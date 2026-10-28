@@ -104,9 +104,6 @@ def resume_run(
     *,
     database_path: Path | str,
     run_id: str,
-    scenario: str | None = None,
-    fail_tool: str | None = None,
-    fail_on_attempt: int | None = None,
 ) -> PlanningResult:
     """Resume an unfinished run or return a completed run without duplicate tools."""
     existing = load_run(database_path=database_path, run_id=run_id)
@@ -117,36 +114,7 @@ def resume_run(
                 existing=existing,
             )
         return existing
-    if scenario is None:
-        raise ValueError("scenario is required when the run does not exist")
-    final_state = _invoke_resume(
-        database_path=database_path,
-        run_id=run_id,
-        scenario=scenario,
-        fail_tool=fail_tool,
-        fail_on_attempt=fail_on_attempt,
-    )
-    return PlanningResult(**final_state["result"])
-
-
-def _invoke_resume(
-    *,
-    database_path: Path | str,
-    run_id: str,
-    scenario: str,
-    fail_tool: str | None,
-    fail_on_attempt: int | None,
-) -> dict:
-    from content_planner.graph.workflow import invoke_scenario
-
-    return invoke_scenario(
-        database_path=database_path,
-        scenario=scenario,
-        thread_id=run_id,
-        run_id=run_id,
-        fail_tool=fail_tool,
-        fail_on_attempt=fail_on_attempt,
-    )
+    raise ValueError("RUN_NOT_FOUND")
 
 
 def _resume_interrupted_run(
